@@ -96,6 +96,10 @@ Avoid greetings and meta-commentary.
 - [Flarum Community](https://discuss.flarum.org)
 - [Report Issues](https://github.com/datlechin/flarum-ai-summarize/issues)
 
+## Sponsor
+
+If you find this extension helpful, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/datlechin).
+
 ## License
 
 MIT License - see LICENSE file for details
