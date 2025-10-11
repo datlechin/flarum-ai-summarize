@@ -56,6 +56,7 @@ A draggable popup appears at the top-right showing the summary in real-time.
 ![Summary Popup](https://via.placeholder.com/800x600/5CB85C/ffffff?text=Screenshot:+Summary+Popup)
 
 **Features:**
+
 - Real-time streaming with blinking cursor
 - HTML formatted text (bold, italic, lists)
 - Drag to move anywhere on screen
@@ -84,6 +85,7 @@ Avoid greetings and meta-commentary.
 ```
 
 **Prompt Tips:**
+
 - Define desired length and style
 - Specify tone (neutral, formal, casual)
 - Mention what to focus on (key points, debates, conclusions)
@@ -93,13 +95,9 @@ Avoid greetings and meta-commentary.
 
 - [Packagist](https://packagist.org/packages/datlechin/flarum-ai-summarize)
 - [GitHub Repository](https://github.com/datlechin/flarum-ai-summarize)
-- [Flarum Community](https://discuss.flarum.org)
+- [Flarum Community](https://discuss.flarum.org/d/FLARUM_DISCUSS_ID)
 - [Report Issues](https://github.com/datlechin/flarum-ai-summarize/issues)
 
 ## Sponsor
 
 If you find this extension helpful, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/datlechin).
-
-## License
-
-MIT License - see LICENSE file for details
