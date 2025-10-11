@@ -91,7 +91,7 @@ export default class SummaryPopup extends Component<SummaryPopupAttrs> {
           <div className="SummaryPopup-body">
             {this.error && <div className="SummaryPopup-error">{this.error}</div>}
 
-            {(this.summaryData && !this.error) && (
+            {this.summaryData && !this.error && (
               <div className="SummaryPopup-content">
                 <div className={`SummaryPopup-summary ${this.loading ? 'is-streaming' : ''}`}>
                   {this.summaryData.summary && m.trust(this.summaryData.summary)}
