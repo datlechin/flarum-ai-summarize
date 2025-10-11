@@ -51,7 +51,7 @@ export default class SummaryPopup extends Component<SummaryPopupAttrs> {
       this.popupX = window.innerWidth - rect.width - 20;
       this.popupY = 70;
     }
-    
+
     this.updatePosition();
   }
 
@@ -228,12 +228,12 @@ export default class SummaryPopup extends Component<SummaryPopupAttrs> {
   stopDrag(handleMouseMove: (e: MouseEvent) => void) {
     this.isDragging = false;
     document.removeEventListener('mousemove', handleMouseMove);
-    
+
     // Save position when drag ends
     if (this.attrs.onPositionChange) {
       this.attrs.onPositionChange(this.popupX, this.popupY);
     }
-    
+
     m.redraw();
   }
 
