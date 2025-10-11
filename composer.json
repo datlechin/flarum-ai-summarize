@@ -29,7 +29,7 @@
     "homepage": "https://nqd.vn",
     "support": {
         "source": "https://github.com/datlechin/flarum-ai-summarize",
-        "forum": "https://discuss.flarum.org/d/FLARUM_DISCUSS_ID"
+        "forum": "https://discuss.flarum.org/d/38283"
     },
     "autoload": {
         "psr-4": {
