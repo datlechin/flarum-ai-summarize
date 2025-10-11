@@ -15,7 +15,7 @@ A [Flarum](https://flarum.org) extension that provides AI-powered discussion sum
 
 ## Requirements
 
-- Flarum 1.2+
+- Flarum 1.8+
 - PHP 8.1+
 - [datlechin/flarum-ai](https://github.com/datlechin/flarum-ai) extension (required dependency)
 - An AI provider configured (OpenAI, Anthropic, Google Gemini, etc.)
@@ -41,7 +41,7 @@ composer require datlechin/flarum-ai-summarize
 
 The AI Summarize button appears in the discussion controls for discussions that meet the minimum post requirement.
 
-![Summarize Button Location](https://github.com/user-attachments/assets/78c0806e-848d-4745-8d37-229be5d89025)
+![Summarize Button Location](./art/summary-button-in-discussion-controls.png)
 
 **To generate a summary:**
 
@@ -53,7 +53,7 @@ The AI Summarize button appears in the discussion controls for discussions that 
 
 A draggable popup appears at the top-right showing the summary in real-time.
 
-https://github.com/user-attachments/assets/6ce00683-e6c2-4c93-bfad-6db9ddc30035
+![Summary Popup](./art/summary-popup.gif)
 
 **Features:**
 
@@ -64,7 +64,7 @@ https://github.com/user-attachments/assets/6ce00683-e6c2-4c93-bfad-6db9ddc30035
 - Minimize/maximize button
 - Close button
 
-https://github.com/user-attachments/assets/acd91cf8-b0f1-4ddf-8bd4-30746238adf7
+![Popup Controls](./art/drag-and-drop.gif)
 
 ## Customization
 
@@ -72,7 +72,7 @@ https://github.com/user-attachments/assets/acd91cf8-b0f1-4ddf-8bd4-30746238adf7
 
 You can customize the AI prompt in admin settings to influence summary style and content.
 
-![Custom Prompt](https://github.com/user-attachments/assets/b61c36bd-1ddd-44ec-89a2-ffc0da4a453f)
+![Custom Prompt](./art/custom-prompt.png)
 
 **Example custom prompt:**
 
