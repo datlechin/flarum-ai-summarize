@@ -58,9 +58,6 @@ class SummarizeService
         ];
     }
 
-    /**
-     * Stream summary generation
-     */
     public function streamSummary(Discussion $discussion): \Generator
     {
         $posts = CommentPost::where('discussion_id', $discussion->id)
@@ -98,7 +95,11 @@ class SummarizeService
 
     private function buildContent(Discussion $discussion, $posts): string
     {
-        $content = "Discussion Title: {$discussion->title}\n\n";
+        $totalPosts = $posts->count();
+
+        $content = "Discussion Title: {$discussion->title}\n";
+        $content .= "Total Posts to Summarize: {$totalPosts}\n";
+        $content .= "========================================\n\n";
 
         $maxPosts = (int) $this->settings->get('datlechin-ai-summarize.max_posts', 100);
         $postCount = 0;
@@ -118,6 +119,9 @@ class SummarizeService
             $postCount++;
         }
 
+        $content .= "========================================\n";
+        $content .= "END OF DISCUSSION - These are ALL the posts. Do not add or invent any additional posts.";
+
         return $content;
     }
 
@@ -125,23 +129,33 @@ class SummarizeService
     {
         $customPrompt = $this->settings->get('datlechin-ai-summarize.system_prompt');
 
-        if ($customPrompt) {
+        if (! empty($customPrompt)) {
             return $customPrompt;
         }
 
         return <<<PROMPT
-You are an AI assistant tasked with summarizing forum discussions. 
-Create a concise, informative summary that captures the main points, key arguments, and important conclusions from the discussion.
+You are a forum discussion summarizer. Summarize ONLY the exact posts provided between the header and "END OF DISCUSSION" marker.
 
-Your summary should:
-- Be clear and easy to understand
-- Highlight the main topic and key points
-- Mention important insights or conclusions
-- Be between 100-200 words
-- Use neutral, objective language
-- Focus on the content, not the participants
+CRITICAL RULES:
+1. The "Total Posts to Summarize" count is absolute—never reference more posts than stated
+2. Only summarize content explicitly written in the provided posts
+3. Do NOT invent posts, usernames, quotes, arguments, or technical details
+4. Do NOT use external knowledge to expand or "improve" the discussion
+5. If only 2-3 posts exist, reflect only those posts—no hypothetical additions
 
-Do not include greetings, sign-offs, or meta-commentary about the summary itself.
+BEFORE including any point, verify:
+- Is this exact point written in a provided post?
+- Can I cite the specific post number and username?
+- Does this post number exist within the total count?
+
+OUTPUT REQUIREMENTS:
+- 100-200 words
+- Neutral, objective language
+- Accurately represent the exact number of posts provided
+- State if discussion is brief or lacks detail
+- No greetings, sign-offs, or meta-commentary
+
+FORMAT: "The discussion contains [X] posts by [Y] user(s). [User A] discusses [exact topic from their post]. [User B] responds with [exact point]. Key points: [only what was actually written]."
 PROMPT;
     }
 

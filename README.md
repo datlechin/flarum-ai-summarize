@@ -31,7 +31,7 @@ composer require datlechin/flarum-ai-summarize
 ## Configuration
 
 1. Install and configure `datlechin/flarum-ai` extension
-2. Set up an LLM provider (OpenAI, Gemini, etc.)
+2. Set up an LLM provider (OpenAI, Anthropic, Google Gemini, etc.)
 3. Configure settings in **Admin Panel → Extensions → AI Summarize**
 4. Set permissions in **Admin Panel → Permissions**
 
@@ -41,7 +41,7 @@ composer require datlechin/flarum-ai-summarize
 
 The AI Summarize button appears in the discussion controls for discussions that meet the minimum post requirement.
 
-![Summarize Button Location](https://via.placeholder.com/800x400/4A90E2/ffffff?text=Screenshot:+Summarize+Button+in+Discussion+Controls)
+![Summarize Button Location](https://github.com/user-attachments/assets/78c0806e-848d-4745-8d37-229be5d89025)
 
 **To generate a summary:**
 
@@ -53,7 +53,7 @@ The AI Summarize button appears in the discussion controls for discussions that 
 
 A draggable popup appears at the top-right showing the summary in real-time.
 
-![Summary Popup](https://via.placeholder.com/800x600/5CB85C/ffffff?text=Screenshot:+Summary+Popup)
+https://github.com/user-attachments/assets/6ce00683-e6c2-4c93-bfad-6db9ddc30035
 
 **Features:**
 
@@ -64,13 +64,15 @@ A draggable popup appears at the top-right showing the summary in real-time.
 - Minimize/maximize button
 - Close button
 
-![Draggable Popup](https://via.placeholder.com/800x450/F0AD4E/ffffff?text=Screenshot:+Drag+and+Drop)
+https://github.com/user-attachments/assets/acd91cf8-b0f1-4ddf-8bd4-30746238adf7
 
 ## Customization
 
 ### Custom System Prompts
 
 You can customize the AI prompt in admin settings to influence summary style and content.
+
+![Custom Prompt](https://github.com/user-attachments/assets/b61c36bd-1ddd-44ec-89a2-ffc0da4a453f)
 
 **Example custom prompt:**
 
