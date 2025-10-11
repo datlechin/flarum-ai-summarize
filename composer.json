@@ -26,6 +26,11 @@
             "role": "Developer"
         }
     ],
+    "homepage": "https://nqd.vn",
+    "support": {
+        "source": "https://github.com/datlechin/flarum-ai-summarize",
+        "forum": "https://discuss.flarum.org/d/FLARUM_DISCUSS_ID"
+    },
     "autoload": {
         "psr-4": {
             "Datlechin\\AiSummarize\\": "src/"
