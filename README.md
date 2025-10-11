@@ -97,7 +97,7 @@ Avoid greetings and meta-commentary.
 
 - [Packagist](https://packagist.org/packages/datlechin/flarum-ai-summarize)
 - [GitHub Repository](https://github.com/datlechin/flarum-ai-summarize)
-- [Flarum Community](https://discuss.flarum.org/d/FLARUM_DISCUSS_ID)
+- [Flarum Community](https://discuss.flarum.org/d/38283)
 - [Report Issues](https://github.com/datlechin/flarum-ai-summarize/issues)
 
 ## Sponsor
