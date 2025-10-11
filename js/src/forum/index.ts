@@ -18,6 +18,7 @@ app.initializers.add('datlechin/flarum-ai-summarize', () => {
     }
 
     const commentCount = discussion.commentCount();
+
     if (!commentCount || commentCount < minPosts) {
       return;
     }
