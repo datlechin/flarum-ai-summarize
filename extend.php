@@ -19,14 +19,14 @@ use Datlechin\AiSummarize\Access\DiscussionPolicy;
 
 return [
     (new Extend\Frontend('forum'))
-        ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/less/forum.less'),
-        
+        ->js(__DIR__ . '/js/dist/forum.js')
+        ->css(__DIR__ . '/less/forum.less'),
+
     (new Extend\Frontend('admin'))
-        ->js(__DIR__.'/js/dist/admin.js')
-        ->css(__DIR__.'/less/admin.less'),
-        
-    new Extend\Locales(__DIR__.'/locale'),
+        ->js(__DIR__ . '/js/dist/admin.js')
+        ->css(__DIR__ . '/less/admin.less'),
+
+    new Extend\Locales(__DIR__ . '/locale'),
 
     (new Extend\Routes('api'))
         ->get('/ai-summarize/discussions', 'discussions.summarize', SummarizeDiscussionController::class),
@@ -44,5 +44,5 @@ return [
         ->default('datlechin-ai-summarize.max_posts', 100)
         ->default('datlechin-ai-summarize.enabled', true)
         ->serializeToForum('datlechin-ai-summarize.enabled', 'datlechin-ai-summarize.enabled', 'boolval')
-        ->serializeToForum('datlechin-ai-summarize.min_posts', 'datlechin-ai-summarize.minPosts', 'intval'),
+        ->serializeToForum('datlechin-ai-summarize.minPosts', 'datlechin-ai-summarize.min_posts', 'intval'),
 ];

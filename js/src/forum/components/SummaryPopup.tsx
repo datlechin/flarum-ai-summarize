@@ -89,14 +89,9 @@ export default class SummaryPopup extends Component<SummaryPopupAttrs> {
 
         {!this.isMinimized && (
           <div className="SummaryPopup-body">
-            {this.error && (
-              <div className="SummaryPopup-error Alert Alert--error">
-                {icon('fas fa-exclamation-circle')}
-                <span>{this.error}</span>
-              </div>
-            )}
+            {this.error && <div className="SummaryPopup-error">{this.error}</div>}
 
-            {this.summaryData && (
+            {(this.summaryData && !this.error) && (
               <div className="SummaryPopup-content">
                 <div className={`SummaryPopup-summary ${this.loading ? 'is-streaming' : ''}`}>
                   {this.summaryData.summary && m.trust(this.summaryData.summary)}
