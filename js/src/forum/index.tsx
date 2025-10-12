@@ -25,15 +25,9 @@ app.initializers.add('datlechin/flarum-ai-summarize', () => {
 
     items.add(
       'aiSummarize',
-      Button.component(
-        {
-          icon: 'fas fa-magic',
-          onclick: () => {
-            PopupManager.show(discussion);
-          },
-        },
-        app.translator.trans('datlechin-ai-summarize.forum.discussion_controls.summarize_button')
-      ),
+      <Button onclick={() => PopupManager.show(discussion)} icon="fas fa-magic">
+        {app.translator.trans('datlechin-ai-summarize.forum.discussion_controls.summarize_button')}
+      </Button>,
       -10
     );
   });

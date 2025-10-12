@@ -33,11 +33,8 @@ return [
 
     (new Extend\ApiSerializer(DiscussionSerializer::class))
         ->attribute('canSummarize', function (DiscussionSerializer $serializer, Discussion $discussion) {
-            return $serializer->getActor()->can('aiSummarize', $discussion);
+            return $serializer->getActor()->can('discussion.aiSummarize', $discussion);
         }),
-
-    (new Extend\Policy())
-        ->modelPolicy(Discussion::class, DiscussionPolicy::class),
 
     (new Extend\Settings())
         ->default('datlechin-ai-summarize.min_posts', 3)

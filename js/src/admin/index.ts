@@ -35,6 +35,7 @@ app.initializers.add('datlechin/flarum-ai-summarize', () => {
         icon: 'fas fa-magic',
         label: app.translator.trans('datlechin-ai-summarize.admin.permissions.ai_summarize_label'),
         permission: 'discussion.aiSummarize',
+        tagScoped: true,
       },
       'view'
     );

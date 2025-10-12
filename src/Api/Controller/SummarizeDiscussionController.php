@@ -12,6 +12,7 @@
 namespace Datlechin\AiSummarize\Api\Controller;
 
 use Datlechin\AiSummarize\SummarizeService;
+use Exception;
 use Flarum\Discussion\DiscussionRepository;
 use Flarum\Http\RequestUtil;
 use Illuminate\Support\Arr;
@@ -32,25 +33,23 @@ class SummarizeDiscussionController implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $actor = RequestUtil::getActor($request);
+        $actor->assertCan('discussion.aiSummarize');
+
         $discussionId = Arr::get($request->getQueryParams(), 'id');
         $stream = Arr::get($request->getQueryParams(), 'stream', false);
 
         $discussion = $this->discussions->findOrFail($discussionId, $actor);
 
-        if (!$actor->hasPermission('discussion.aiSummarize')) {
-            $actor->assertCan('aiSummarize', $discussion);
-        }
-
-        if (!$this->summarizeService->canSummarize($discussion)) {
+        if (! $this->summarizeService->canSummarize($discussion)) {
             return new JsonResponse([
                 'errors' => [
                     [
                         'status' => '400',
                         'code' => 'not_enough_posts',
                         'title' => 'Bad Request',
-                        'detail' => 'This discussion does not have enough posts to summarize.'
-                    ]
-                ]
+                        'detail' => 'This discussion does not have enough posts to summarize.',
+                    ],
+                ],
             ], 400);
         }
 
@@ -62,18 +61,18 @@ class SummarizeDiscussionController implements RequestHandlerInterface
             $summary = $this->summarizeService->summarize($discussion);
 
             return new JsonResponse([
-                'data' => $summary
+                'data' => $summary,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return new JsonResponse([
                 'errors' => [
                     [
                         'status' => '500',
                         'code' => 'summarization_failed',
                         'title' => 'Internal Server Error',
-                        'detail' => 'Failed to generate summary: ' . $e->getMessage()
-                    ]
-                ]
+                        'detail' => 'Failed to generate summary: ' . $e->getMessage(),
+                    ],
+                ],
             ], 500);
         }
     }
@@ -83,9 +82,9 @@ class SummarizeDiscussionController implements RequestHandlerInterface
         $body = Utils::streamFor(function () use ($discussion) {
             echo "data: " . json_encode([
                 'type' => 'start',
-                'data' => ['message' => 'Generating summary...']
+                'data' => ['message' => 'Generating summary...'],
             ]) . "\n\n";
-            
+
             if (ob_get_level() > 0) {
                 ob_flush();
             }
@@ -96,31 +95,30 @@ class SummarizeDiscussionController implements RequestHandlerInterface
                 $fullContent .= $chunk;
                 echo "data: " . json_encode([
                     'type' => 'content',
-                    'data' => $chunk
+                    'data' => $chunk,
                 ]) . "\n\n";
-                
+
                 if (ob_get_level() > 0) {
                     ob_flush();
                 }
                 flush();
             }
 
-            // Send formatted HTML version
             $html = $this->summarizeService->formatToHtml($fullContent);
             echo "data: " . json_encode([
                 'type' => 'complete',
                 'data' => [
-                    'html' => $html
-                ]
+                    'html' => $html,
+                ],
             ]) . "\n\n";
-            
+
             if (ob_get_level() > 0) {
                 ob_flush();
             }
             flush();
 
             echo "data: [DONE]\n\n";
-            
+
             if (ob_get_level() > 0) {
                 ob_flush();
             }
