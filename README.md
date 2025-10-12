@@ -15,7 +15,7 @@ A [Flarum](https://flarum.org) extension that provides AI-powered discussion sum
 
 ## Requirements
 
-- Flarum 1.8+
+- Flarum 1.2+
 - PHP 8.1+
 - [datlechin/flarum-ai](https://github.com/datlechin/flarum-ai) extension (required dependency)
 - An AI provider configured (OpenAI, Anthropic, Google Gemini, etc.)
