@@ -13,6 +13,7 @@ namespace Datlechin\AiSummarize;
 
 use Datlechin\Ai\Providers\HttpProviderFactory;
 use Flarum\Discussion\Discussion;
+use Flarum\Locale\LocaleManager;
 use Flarum\Post\CommentPost;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Formatter\Formatter;
@@ -22,7 +23,8 @@ class SummarizeService
     public function __construct(
         private HttpProviderFactory $providerFactory,
         private SettingsRepositoryInterface $settings,
-        private Formatter $formatter
+        private Formatter $formatter,
+        private LocaleManager $localeManager
     ) {}
 
     /**
@@ -129,11 +131,7 @@ class SummarizeService
     {
         $customPrompt = $this->settings->get('datlechin-ai-summarize.system_prompt');
 
-        if (! empty($customPrompt)) {
-            return $customPrompt;
-        }
-
-        return <<<PROMPT
+        $prompt = ! empty($customPrompt) ? $customPrompt : <<<PROMPT
 You are a forum discussion summarizer. Summarize ONLY the exact posts provided between the header and "END OF DISCUSSION" marker.
 
 CRITICAL RULES:
@@ -157,6 +155,14 @@ OUTPUT REQUIREMENTS:
 
 FORMAT: "The discussion contains [X] posts by [Y] user(s). [User A] discusses [exact topic from their post]. [User B] responds with [exact point]. Key points: [only what was actually written]."
 PROMPT;
+
+        $locale = $this->localeManager->getLocale();
+
+        if ($locale !== 'en') {
+            $prompt .= "\n\nIMPORTANT: You MUST write your entire response in the language corresponding to locale code: {$locale}. Do not respond in English.";
+        }
+
+        return $prompt;
     }
 
     public function canSummarize(Discussion $discussion): bool
