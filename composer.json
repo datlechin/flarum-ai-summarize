@@ -16,7 +16,7 @@
     "type": "flarum-extension",
     "license": "MIT",
     "require": {
-        "flarum/core": "^1.2",
+        "flarum/core": "^2.0.1",
         "datlechin/flarum-ai": "*"
     },
     "authors": [
