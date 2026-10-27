@@ -1,39 +1,59 @@
 {
     "name": "datlechin/flarum-ai-summarize",
-    "description": "AI discussion summaries for Flarum with real-time streaming.",
+    "description": "AI summaries of Flarum discussions, written once, shown under the first post, citing the posts they come from.",
     "keywords": [
         "flarum",
-        "extension",
         "ai",
-        "summarize",
-        "openai",
-        "gemini",
-        "llm",
-        "streaming",
         "summary",
-        "discussion"
+        "summarize",
+        "tldr",
+        "discussion",
+        "llm"
     ],
     "type": "flarum-extension",
     "license": "MIT",
-    "require": {
-        "flarum/core": "^1.2",
-        "datlechin/flarum-ai": "*"
-    },
+    "homepage": "https://github.com/datlechin/flarum-ai-summarize",
     "authors": [
         {
             "name": "Ngo Quoc Dat",
             "email": "datlechin@gmail.com",
+            "homepage": "https://nqd.vn",
             "role": "Developer"
         }
     ],
-    "homepage": "https://nqd.vn",
     "support": {
+        "issues": "https://github.com/datlechin/flarum-ai-summarize/issues",
         "source": "https://github.com/datlechin/flarum-ai-summarize",
         "forum": "https://discuss.flarum.org/d/38283"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/datlechin"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "datlechin/flarum-ai": "^1.0",
+        "flarum/core": "^2.0"
+    },
+    "require-dev": {
+        "flarum/likes": "*",
+        "flarum/markdown": "*",
+        "flarum/mentions": "*",
+        "flarum/phpstan": "^2.0",
+        "flarum/tags": "*",
+        "flarum/testing": "^2.0",
+        "laravel/pint": "^1.18"
     },
     "autoload": {
         "psr-4": {
             "Datlechin\\AiSummarize\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Datlechin\\AiSummarize\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -41,17 +61,22 @@
             "title": "AI Summarize",
             "category": "feature",
             "icon": {
-                "name": "fas fa-magic",
-                "color": "#8B5CF6",
-                "backgroundColor": "#F3E8FF"
-            }
+                "name": "fas fa-wand-magic-sparkles",
+                "color": "#fff",
+                "backgroundColor": "#8b5cf6"
+            },
+            "optional-dependencies": [
+                "flarum-likes",
+                "flarum-markdown",
+                "flarum-mentions"
+            ]
         },
         "flarum-cli": {
             "modules": {
                 "admin": true,
                 "forum": true,
                 "js": true,
-                "jsCommon": false,
+                "jsCommon": true,
                 "css": true,
                 "locale": true,
                 "gitConf": true,
@@ -67,27 +92,25 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "autoload-dev": {
-        "psr-4": {
-            "Datlechin\\AiSummarize\\Tests\\": "tests/"
-        }
+    "config": {
+        "sort-packages": true
     },
     "scripts": {
         "test": [
-            "@test:unit",
             "@test:integration"
         ],
-        "test:unit": "phpunit -c tests/phpunit.unit.xml",
         "test:integration": "phpunit -c tests/phpunit.integration.xml",
-        "test:setup": "@php tests/integration/setup.php"
+        "test:setup": "@php tests/integration/setup.php",
+        "analyse:phpstan": [
+            "@php tests/phpstan-setup.php",
+            "phpstan analyse"
+        ],
+        "clear-cache:phpstan": "phpstan clear-result-cache"
     },
     "scripts-descriptions": {
         "test": "Runs all tests.",
-        "test:unit": "Runs all unit tests.",
         "test:integration": "Runs all integration tests.",
-        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
-    },
-    "require-dev": {
-        "flarum/testing": "^1.0.0"
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+        "analyse:phpstan": "Run static analysis"
     }
 }

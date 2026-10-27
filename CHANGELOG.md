@@ -1,46 +1,65 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this extension are listed here. It follows [Semantic Versioning](https://semver.org) and the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [Unreleased]
 
-## [1.0.0] - 2025-01-10
+## [1.0.0] - 2026-10-27
+
+Rewritten for Flarum 2, on top of [AI](https://github.com/datlechin/flarum-ai) 1.0. Run `php flarum migrate` after updating.
 
 ### Added
 
-- Initial release of AI Summarize extension
-- AI-powered discussion summarization using LLM providers
-- Integration with `datlechin/flarum-ai` extension
-- Support for multiple AI providers (OpenAI, Gemini, etc.)
-- Real-time summary generation without database storage
-- Permission system for controlling access to summarization
-- Customizable system prompts for AI
-- Configurable minimum posts threshold
-- Configurable maximum posts to include
-- Beautiful modal UI for displaying summaries
-- Summary metadata display (provider, model, post count)
-- Admin settings page for configuration
-- Complete localization support (English included)
-- Responsive design for mobile devices
+- Summaries are saved, one per discussion, and shown under the first post to everyone with the new **View AI summaries** permission.
+- Each point links to the posts it comes from, and participants are named with @mentions.
+- The summary says how many replies it hasn't seen, and **Update** writes a new one.
+- A summary is deleted when a post it covers is hidden, edited or deleted.
+- Moderators who can edit posts can remove a summary.
+- **Automatic summaries per hour**: `php flarum summaries:backfill` summarizes recently active discussions through the scheduler. Off by default.
+- Long discussions are read from their first and last posts plus the most liked ones in between.
+- A limit of six summaries per five minutes per person, and one at a time per discussion.
 
-### Features
+### Changed
 
-- **Lightweight**: No database migrations or caching needed
-- **Real-time**: Generate summaries on-demand
-- **Permission Control**: Fine-grained permissions for who can summarize
-- **Multiple Providers**: Works with any LLM provider supported by flarum-ai
-- **Quality Prompts**: Pre-configured prompts optimized for forum discussions
-- **Cost Management**: Configurable limits to control API usage
-- **User Experience**: Clean, intuitive interface matching Flarum design
+- **Breaking:** requires Flarum 2.0, PHP 8.3 and AI 1.0.
+- **Breaking:** the custom system prompt is now **Extra instructions**, added to the built-in prompt instead of replacing it. The migration moves it.
+- The summary streams in place under the first post instead of in a draggable popup.
+- **Write AI summaries** starts out granted to Moderators.
 
-### API
+### Removed
 
-- `POST /api/discussions/{id}/summarize` - Generate discussion summary
-- Returns JSON response with summary data
+- **Breaking:** the **Enable AI Summarization** setting. The permissions decide who sees and writes summaries.
+- **Breaking:** `GET /api/ai-summarize/discussions`. Use `POST /api/discussions/{id}/summary`.
+- The draggable popup and its remembered position.
 
-### Dependencies
+### Fixed
 
-- Requires `datlechin/flarum-ai` extension
-- Requires Flarum 1.2+
-- Requires PHP 8.1+
+- The streamed summary was inserted as HTML, so a post could make the model write a script that ran in the reader's browser.
+- Discussions longer than **Maximum Posts to Include** were summarized from their first posts only.
+- Summaries could still come back in English on forums in other languages. The prompt now names the forum's default language instead of giving a locale code.
+
+## [0.1.2] - 2026-03-21
+
+### Fixed
+
+- Summaries now follow the forum's language.
+
+## [0.1.1] - 2025-10-12
+
+### Fixed
+
+- The summarize button showed only to admins.
+
+### Changed
+
+- Lowered the Flarum requirement from 1.8 to 1.2.
+
+## [0.1.0] - 2025-10-11
+
+First release, for Flarum 1.
+
+[Unreleased]: https://github.com/datlechin/flarum-ai-summarize/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/datlechin/flarum-ai-summarize/compare/v0.1.2...v1.0.0
+[0.1.2]: https://github.com/datlechin/flarum-ai-summarize/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/datlechin/flarum-ai-summarize/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/datlechin/flarum-ai-summarize/releases/tag/v0.1.0

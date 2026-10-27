@@ -1,105 +1,89 @@
-# AI Summarize for Flarum
+# AI Summarize
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/datlechin/flarum-ai-summarize.svg)](https://packagist.org/packages/datlechin/flarum-ai-summarize) [![Total Downloads](https://img.shields.io/packagist/dt/datlechin/flarum-ai-summarize.svg)](https://packagist.org/packages/datlechin/flarum-ai-summarize)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/datlechin/flarum-ai-summarize/blob/main/LICENSE) [![Latest Stable Version](https://img.shields.io/packagist/v/datlechin/flarum-ai-summarize.svg)](https://packagist.org/packages/datlechin/flarum-ai-summarize) [![Total Downloads](https://img.shields.io/packagist/dt/datlechin/flarum-ai-summarize.svg)](https://packagist.org/packages/datlechin/flarum-ai-summarize) [![Sponsor](https://img.shields.io/github/sponsors/datlechin?logo=githubsponsors&label=Sponsor)](https://github.com/sponsors/datlechin)
 
-A [Flarum](https://flarum.org) extension that provides AI-powered discussion summarization with real-time streaming.
+A short AI summary of a discussion, under its first post. It is written once and saved, so readers don't wait for it or cost anything. Each point links to the posts it comes from.
 
-## Features
+![A summary under the first post](https://raw.githubusercontent.com/datlechin/flarum-ai-summarize/main/screenshots/summary.png)
 
-- 🤖 AI-powered discussion summaries
-- ⚡ Real-time streaming display
-- 🎨 HTML formatted output
-- 📌 Draggable popup with position memory
-- � Multiple LLM providers (OpenAI, Gemini, etc.)
-- ⚙️ Customizable prompts and settings
+## Install
 
-## Requirements
-
-- Flarum 1.2+
-- PHP 8.1+
-- [datlechin/flarum-ai](https://github.com/datlechin/flarum-ai) extension (required dependency)
-- An AI provider configured (OpenAI, Anthropic, Google Gemini, etc.)
-
-## Installation
-
-Install with composer:
-
-```bash
+```sh
 composer require datlechin/flarum-ai-summarize
 ```
 
-## Configuration
+This also installs [AI](https://github.com/datlechin/flarum-ai), which connects the forum to a model provider. Enable both under Admin > Extensions, then set up a provider on the AI page. Needs Flarum 2.0 and PHP 8.3.
 
-1. Install and configure `datlechin/flarum-ai` extension
-2. Set up an LLM provider (OpenAI, Anthropic, Google Gemini, etc.)
-3. Configure settings in **Admin Panel → Extensions → AI Summarize**
-4. Set permissions in **Admin Panel → Permissions**
+## How it works
 
-## Usage
+- Someone with **Write AI summaries** clicks **Summarize this discussion** under the first post, or **Summarize** in the discussion menu.
+- The summary appears as the model writes it, then is saved.
+- Everyone with **View AI summaries** sees the saved summary, with the model that wrote it, how many posts it covers and when.
+- When new replies arrive, the summary stays and says how many it hasn't seen. **Update** writes a new one.
+- When a post the summary covers is hidden, edited or deleted, the summary is deleted, so it never repeats what was taken back.
+- Moderators who can edit posts can remove a summary from the discussion menu.
 
-### Accessing the Feature
+Summaries are written in the forum's default language, whatever language the posts are in.
 
-The AI Summarize button appears in the discussion controls for discussions that meet the minimum post requirement.
+![The summary as it is written](https://raw.githubusercontent.com/datlechin/flarum-ai-summarize/main/screenshots/streaming.png)
 
-![Summarize Button Location](./art/summary-button-in-discussion-controls.png)
+### What the model reads
 
-**To generate a summary:**
+- The title and the comments everyone in the discussion can see. Hidden posts and posts waiting for approval are left out.
+- Long discussions: the first 5 posts, the last 5, and the most liked in between, up to **Posts to read at most**.
+- Long posts: their beginning and end.
 
-1. Open any discussion with enough posts (default: 3 or more)
-2. Click the discussion controls dropdown (•••)
-3. Select **"Summarize with AI"**
+It is asked to use only what the posts say, to name people by username and to cite post numbers. Citations of posts it wasn't given are dropped, and an @mention of someone who didn't post in the discussion becomes plain text.
 
-### The Summary Popup
+## Settings
 
-A draggable popup appears at the top-right showing the summary in real-time.
+Admin > Extensions > AI Summarize.
 
-![Summary Popup](./art/summary-popup.gif)
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Posts needed for a summary | 3 | Shorter discussions can't be summarized. |
+| Posts to read at most | 100 | Caps what one summary costs. |
+| Automatic summaries per hour | 0 (off) | Summarizes up to this many recently active discussions per hour without anyone asking. |
+| Extra instructions | Empty | Added to the built-in instructions, for example about tone. |
 
-**Features:**
+## Permissions
 
-- Real-time streaming with blinking cursor
-- HTML formatted text (bold, italic, lists)
-- Drag to move anywhere on screen
-- Position is remembered
-- Minimize/maximize button
-- Close button
+| Permission | Default | Allows |
+| --- | --- | --- |
+| View AI summaries | Everyone, guests included | Seeing saved summaries. |
+| Write AI summaries | Moderators | Writing a summary, and a new one once replies arrive. Six per five minutes per person. |
 
-![Popup Controls](./art/drag-and-drop.gif)
+Both can be set per tag.
 
-## Customization
+## Automatic summaries
 
-### Custom System Prompts
+`php flarum summaries:backfill` runs every ten minutes through the [Flarum scheduler](https://docs.flarum.org/2.x/scheduler), so the scheduler's cron entry must be set up. Each run takes a sixth of the hourly budget. It picks discussions active in the last 30 days, ones without a summary first, and refreshes a summary at most once an hour.
 
-You can customize the AI prompt in admin settings to influence summary style and content.
+## Streaming behind a proxy
 
-![Custom Prompt](./art/custom-prompt.png)
+The summary is sent line by line as it is written. If your server or proxy buffers responses, it still works, but the text shows up all at once at the end. On nginx, the response already sends `X-Accel-Buffering: no`. Turn off any compression or buffering in front of `/api/discussions/*/summary` if you want to see it stream.
 
-**Example custom prompt:**
+## Update
 
-```text
-You are an AI assistant summarizing forum discussions.
-Create a concise summary (100-150 words) that:
-- Highlights the main topic and key arguments
-- Mentions important conclusions or consensus
-- Uses clear, neutral language
-- Focuses on content, not participants
-Avoid greetings and meta-commentary.
+```sh
+composer update datlechin/flarum-ai-summarize
+php flarum migrate
+php flarum cache:clear
 ```
 
-**Prompt Tips:**
+From 0.1.x, the custom system prompt becomes **Extra instructions**, added to the built-in prompt instead of replacing it. The [changelog](https://github.com/datlechin/flarum-ai-summarize/blob/main/CHANGELOG.md) lists what changed.
 
-- Define desired length and style
-- Specify tone (neutral, formal, casual)
-- Mention what to focus on (key points, debates, conclusions)
-- Set boundaries (what to exclude)
+## For extension authors
+
+- The discussion resource has a `summary` relationship to `discussion-summaries`, included by default when showing one discussion, and a `canSummarize` attribute there.
+- A summary has `contentHtml`, `model`, `createdAt`, `postCount`, `newReplyCount` and `canDelete`.
+- `POST /api/discussions/{id}/summary` writes one and answers with newline-delimited JSON: `{"type":"text","text":"..."}` lines, then `{"type":"done"}` or `{"type":"error","message":"..."}`.
+- `DELETE /api/discussion-summaries/{id}` removes one.
 
 ## Links
 
+- [Discuss](https://discuss.flarum.org/d/38283)
+- [AI](https://github.com/datlechin/flarum-ai)
 - [Packagist](https://packagist.org/packages/datlechin/flarum-ai-summarize)
-- [GitHub Repository](https://github.com/datlechin/flarum-ai-summarize)
-- [Flarum Community](https://discuss.flarum.org/d/38283)
-- [Report Issues](https://github.com/datlechin/flarum-ai-summarize/issues)
-
-## Sponsor
-
-If you find this extension helpful, you can support ongoing development through [GitHub Sponsors](https://github.com/sponsors/datlechin).
+- [GitHub](https://github.com/datlechin/flarum-ai-summarize)
+- [Report an issue](https://github.com/datlechin/flarum-ai-summarize/issues)
