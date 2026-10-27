@@ -77,23 +77,31 @@ class BackfillSummariesCommand extends AbstractCommand
 
     protected function candidates(int $limit): iterable
     {
-        return Discussion::query()
-            ->select('discussions.*')
-            ->leftJoin('discussion_summaries', 'discussion_summaries.discussion_id', '=', 'discussions.id')
-            ->whereNull('discussions.hidden_at')
-            ->where('discussions.is_private', false)
-            ->where('discussions.comment_count', '>=', $this->summarizer->minPosts())
-            ->where('discussions.last_posted_at', '>=', Carbon::now()->subDays(self::MAX_AGE_DAYS))
-            ->where(fn (Builder $query) => $query
-                ->whereNull('discussion_summaries.id')
-                ->orWhere(fn (Builder $query) => $query
-                    ->whereColumn('discussions.last_post_number', '>', 'discussion_summaries.last_post_number')
-                    // A busy discussion gets a fresh summary at most once an hour.
-                    ->where('discussion_summaries.created_at', '<', Carbon::now()->subHour())))
-            ->orderByRaw('case when discussion_summaries.id is null then 0 else 1 end')
-            ->orderByDesc('discussions.last_posted_at')
-            ->limit($limit)
-            ->with('summary')
+        $missing = $this->recent()->whereDoesntHave('summary')->limit($limit)->get();
+
+        if ($missing->count() >= $limit) {
+            return $missing;
+        }
+
+        $outdated = $this->recent()
+            ->whereHas('summary', fn (Builder $query) => $query
+                ->whereColumn('discussions.last_post_number', '>', 'discussion_summaries.last_post_number')
+                // A busy discussion gets a fresh summary at most once an hour.
+                ->where('discussion_summaries.created_at', '<', Carbon::now()->subHour()))
+            ->limit($limit - $missing->count())
             ->get();
+
+        return $missing->concat($outdated);
+    }
+
+    protected function recent(): Builder
+    {
+        return Discussion::query()
+            ->whereNull('hidden_at')
+            ->where('is_private', false)
+            ->where('comment_count', '>=', $this->summarizer->minPosts())
+            ->where('last_posted_at', '>=', Carbon::now()->subDays(self::MAX_AGE_DAYS))
+            ->orderByDesc('last_posted_at')
+            ->with('summary');
     }
 }
